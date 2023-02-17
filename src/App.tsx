@@ -25,18 +25,20 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    try {
-      setLoading(true);
-      getPhotos().then((album) => {
+    async function fetchPhotos() {
+      try {
+        const album = await getPhotos();
         setPhotos(album);
-        setVisiblePhotos(album.filter((data, i) => i < 50));
-      });
-    } catch (err) {
-      setError(true);
-      console.log(err);
-    } finally {
-      setLoading(false);
+        setVisiblePhotos(album.slice(0, count));
+      } catch (err) {
+        setError(true);
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
     }
+    setLoading(true);
+    fetchPhotos();
 
     const refElement = blockRef.current;
     refElement?.addEventListener('scroll', handleScroll);
@@ -44,27 +46,30 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    setLoading(true);
-    const updatedList = photos?.slice(0, count) ?? null;
-
-    setTimeout(() => {
-      setVisiblePhotos(updatedList);
-      setLoading(false);
-    }, 1000);
+    if (photos) {
+      setLoading(true);
+      const updatedList = photos?.slice(0, count);
+      setTimeout(() => {
+        setVisiblePhotos(updatedList);
+        setLoading(false);
+      }, 1000);
+    }
   }, [count]);
 
   return (
     <div className='main'>
       <p className='title'>Basic infinite scroll</p>
       <div ref={blockRef} className='content'>
-        {visiblePhotos?.map(({ id, title, thumbnailUrl }) => (
+        {visiblePhotos?.map(({ id, title, color }) => (
           <div key={id} className='item'>
-            <img src={thumbnailUrl} alt={title} className='rounded-2xl' />
+            <p style={{ backgroundColor: color }} className={'img'}>
+              {id}
+            </p>
             <p>{title}</p>
           </div>
         ))}
-        {error && <p>Oops... something went wrong&#40;</p>}
-        {loading && <p className='loading'>loading...</p>}
+        {!loading && error && <p className='status'>Oops... something went wrong&#40;</p>}
+        {loading && <p className='status'>loading...</p>}
       </div>
     </div>
   );
