@@ -1,0 +1,33 @@
+.main {
+  @apply w-screen h-screen p-4
+  flex flex-col justify-between items-center
+  text-white bg-gray-800
+}
+
+.title {
+  @apply h-[10%] text-lg sm:text-2xl flex items-center justify-center
+}
+
+.content {
+  @apply h-[95%] w-full p-5 overflow-x-auto
+  grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-7 items-center justify-center
+  text-white border-slate-400 border-2 rounded-lg
+}
+
+.item {
+  @apply w-full h-full p-4
+  flex flex-col gap-4
+  border-[1px] border-slate-500 rounded-md
+}
+
+.img {
+  @apply w-[120px] h-[120px]
+  flex items-center justify-center
+  text-2xl rounded-md
+}
+
+.status {
+  @apply text-2xl h-[100px]
+  flex items-center justify-center
+  md:col-span-3 sm:col-span-2 lg:col-span-4
+}
