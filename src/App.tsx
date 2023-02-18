@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 
-import { FilterBySelected } from './components/filterBySelected';
-import { FilterByAny } from './components/filterByAny';
-
 import { IComment } from './types';
-import { getPhotos } from './api';
+import { getComments } from './api';
+import { FilterByAnyRemotely } from './components/filterByAny';
+import { FilterBySelected } from './components/filterBySelected';
 import './styles.css';
 
 export function App() {
@@ -13,9 +12,9 @@ export function App() {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    async function fetchPhotos() {
+    async function fetchComments() {
       try {
-        const album = await getPhotos();
+        const album = await getComments();
         setComments(album);
       } catch (err) {
         setError(true);
@@ -24,14 +23,19 @@ export function App() {
         setLoading(false);
       }
     }
+
     setLoading(true);
-    fetchPhotos();
+    fetchComments();
   }, []);
 
   return (
     <div className='main'>
-      <FilterByAny comments={comments} loading={loading} error={error} />
-      <FilterBySelected comments={comments} loading={loading} error={error} />
+      <div>
+        <FilterByAnyRemotely comments={comments} loading={loading} error={error} />
+      </div>
+      <div>
+        <FilterBySelected comments={comments} loading={loading} error={error} />
+      </div>
     </div>
   );
 }

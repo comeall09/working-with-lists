@@ -1,15 +1,11 @@
-import { IComment } from 'src/types';
-
-export function isEqual(arr1: IComment[], arr2: IComment[]) {
-  if (arr1.length !== arr2.length) {
-    return false;
+export function updateSearchParams(param: string, value: string) {
+  const url = new URL(window.location.href);
+  const searchParams = url.searchParams;
+  if (value.length) {
+    searchParams.forEach((val, key) => searchParams.delete(key)); // clear prev params
+    searchParams.set(param, value);
+  } else {
+    url.searchParams.delete(param);
   }
-
-  for (let i = 0; i < arr1.length; i++) {
-    if (arr1[i] !== arr2[i]) {
-      return false;
-    }
-  }
-
-  return true;
+  window.history.replaceState(null, '', url);
 }
