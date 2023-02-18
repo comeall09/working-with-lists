@@ -9,6 +9,7 @@ body {
   font-family: 'Fira Code';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  list-style: none;
 }
 
 code {
@@ -17,8 +18,8 @@ code {
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 5px;
+  height: 5px;
 }
 
 /* Track */
