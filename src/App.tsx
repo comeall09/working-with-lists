@@ -1,14 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { getPhotos } from './api';
-import { IPhoto } from './types';
+import { useCallback, useEffect, useRef } from 'react';
+import { usePhotos } from './shared/hooks';
 import './styles.css';
 
 export function App() {
-  const [photos, setPhotos] = useState<IPhoto[] | null>(null);
-  const [page, setPage] = useState(1);
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const { photos, loading, error, setPage } = usePhotos();
 
   // content wrapper
   const blockRef = useRef<HTMLDivElement>(null);
@@ -24,42 +19,10 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    async function fetchPhotos() {
-      try {
-        const album = await getPhotos(page);
-        setPhotos(album);
-      } catch (err) {
-        setError(true);
-        console.log(err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    setLoading(true);
-    fetchPhotos();
-
     const refElement = blockRef.current;
     refElement?.addEventListener('scroll', handleScroll);
     return () => refElement?.removeEventListener('scroll', handleScroll);
   }, []);
-
-  useEffect(() => {
-    async function fetchPhotos() {
-      try {
-        const newPhotos = await getPhotos(page);
-        const updatedList = (await [...(photos ? photos : []), ...newPhotos]) ?? null;
-        setPhotos(updatedList);
-      } catch (err) {
-        setError(true);
-        console.log(err);
-      } finally {
-        setLoading(false);
-        console.log('finally');
-      }
-    }
-    setLoading(true);
-    fetchPhotos();
-  }, [page]);
 
   return (
     <div className='main'>
