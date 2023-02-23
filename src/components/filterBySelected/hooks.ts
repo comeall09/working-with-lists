@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { IComment } from 'src/types';
-import { isEqual } from 'src/helpers';
+import { isEqual } from 'src/components/helpers';
 
 // helper
 function filterListBy(list: IComment[] = [], value = '', key: keyof IComment) {
@@ -19,13 +19,14 @@ function filterListBy(list: IComment[] = [], value = '', key: keyof IComment) {
 interface IPropsWithValue {
   comments: IComment[];
   filterValue: string;
-  by: keyof IComment;
 }
 
-export function useFilterByValue({ comments, filterValue, by }: IPropsWithValue) {
-  const [filteredPhotos, setFilteredPhotos] = useState(comments);
+export function useFilterByValue({ comments, filterValue }: IPropsWithValue) {
+  const [filteredComments, setFilteredComments] = useState(comments);
+  const [filterParam, setFilterParam] = useState<keyof IComment>('name');
 
-  const filtered = filterListBy(comments, filterValue, by);
+  const filtered = filterListBy(comments, filterValue, filterParam);
+
   useEffect(() => {
     // update location href
     const url = new URL(window.location.href);
@@ -37,10 +38,10 @@ export function useFilterByValue({ comments, filterValue, by }: IPropsWithValue)
     window.history.replaceState(null, '', url);
 
     // filtering
-    if (!isEqual(filtered, filteredPhotos)) {
-      setFilteredPhotos(filterListBy(comments, filterValue, by));
+    if (!isEqual(filtered, filteredComments)) {
+      setFilteredComments(filterListBy(comments, filterValue, filterParam));
     }
-  }, [comments, filterValue, filteredPhotos, filtered, by]);
+  }, [comments, filterValue, filteredComments, filtered, filterParam]);
 
-  return filteredPhotos;
+  return {filteredComments, filterParam, setFilterParam };
 }

@@ -1,16 +1,18 @@
 import { useState, useEffect } from 'react';
 import { IComponentProps } from 'src/types';
+
+import { Comment } from 'src/components/comment';
 import { useFilterByAny } from './hooks';
 
 export function FilterByAny({ comments, loading, error }: IComponentProps) {
   const [inputValue, setInputValue] = useState('');
+
   function handleChange({ target: { value } }: React.ChangeEvent<HTMLInputElement>) {
     setInputValue(value);
     localStorage.setItem('queryAny', value);
   }
 
-  // filter by any value
-  const filteredCommentsByAny = useFilterByAny({ comments: comments ?? [], filterValue: inputValue });
+  const { filteredComments } = useFilterByAny({ comments: comments ?? [], filterValue: inputValue });
 
   useEffect(() => {
     const initQueryAnyValue = localStorage.getItem('queryAny');
@@ -27,23 +29,7 @@ export function FilterByAny({ comments, loading, error }: IComponentProps) {
       <div className='content'>
         {!loading && error && <p className='status'>Oops... something went wrong&#40;</p>}
         {loading && <p className='status'>loading ...</p>}
-        {!loading &&
-          filteredCommentsByAny?.map(({ id, name, email, body }) => (
-            <div key={id} className='item'>
-              <p>
-                <span>name: </span>
-                {name}
-              </p>
-              <p>
-                <span>email: </span>
-                {email}
-              </p>
-              <p>
-                <span>text: </span>
-                {body}
-              </p>
-            </div>
-          ))}
+        {!loading && filteredComments?.map((comment) => <Comment key={comment.id} {...comment} />)}
       </div>
     </div>
   );

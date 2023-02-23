@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { IComment } from 'src/types';
-import { isEqual } from 'src/helpers';
+import { isEqual } from 'src/components/helpers';
 
 // helper
 function filterListByAnyValue(list: IComment[] = [], value = '') {
@@ -24,7 +24,7 @@ interface IAnyProps {
 }
 
 export function useFilterByAny({ comments, filterValue }: IAnyProps) {
-  const [filteredPhotos, setFilteredPhotos] = useState(comments);
+  const [filteredComments, setFilteredComments] = useState(comments);
 
   const filtered = filterListByAnyValue(comments, filterValue);
   useEffect(() => {
@@ -38,10 +38,10 @@ export function useFilterByAny({ comments, filterValue }: IAnyProps) {
     window.history.replaceState(null, '', url);
 
     // filtering
-    if (!isEqual(filtered, filteredPhotos)) {
-      setFilteredPhotos(filterListByAnyValue(comments, filterValue));
+    if (!isEqual(filtered, filteredComments)) {
+      setFilteredComments(filterListByAnyValue(comments, filterValue));
     }
-  }, [comments, filterValue, filteredPhotos, filtered]);
+  }, [comments, filterValue, filteredComments, filtered]);
 
-  return filteredPhotos;
+  return {filteredComments};
 }

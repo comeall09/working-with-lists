@@ -1,6 +1,6 @@
-import { IComment } from './types';
+import { IComment } from '../types';
 
-export async function getPhotos(): Promise<IComment[]> {
+export async function getComments(): Promise<IComment[]> {
   const response = await fetch(`https://jsonplaceholder.typicode.com/comments?_start=1&_limit=100`);
   const comments: IComment[] = await response.json();
   return new Promise((ok) => {

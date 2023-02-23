@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { IComment, IComponentProps } from 'src/types';
+
+import { Comment } from 'src/components/comment';
 import { useFilterByValue } from './hooks';
 
 export function FilterBySelected({ comments, loading, error }: IComponentProps) {
-  const [selectedFilterVal, setSelectedFilterVal] = useState<keyof IComment>('name');
   const [inputValue, setInputValue] = useState('');
 
   function handleChange({ target: { value } }: React.ChangeEvent<HTMLInputElement>) {
@@ -11,10 +12,9 @@ export function FilterBySelected({ comments, loading, error }: IComponentProps) 
     localStorage.setItem('query', value);
   }
 
-  const filteredByValue = useFilterByValue({
+  const { filteredComments, filterParam, setFilterParam } = useFilterByValue({
     comments: comments ?? [],
     filterValue: inputValue,
-    by: selectedFilterVal,
   });
 
   useEffect(() => {
@@ -33,8 +33,8 @@ export function FilterBySelected({ comments, loading, error }: IComponentProps) 
             {['name', 'email', 'body'].map((opt) => (
               <button
                 key={opt}
-                className={`${selectedFilterVal === opt && 'text-orange-400'}`}
-                onClick={() => setSelectedFilterVal(opt as keyof IComment)}
+                className={`${filterParam === opt && 'text-orange-400'}`}
+                onClick={() => setFilterParam(opt as keyof IComment)}
               >
                 {opt}
               </button>
@@ -46,23 +46,7 @@ export function FilterBySelected({ comments, loading, error }: IComponentProps) 
       <div className='content'>
         {!loading && error && <p className='status'>Oops... something went wrong&#40;</p>}
         {loading && <p className='status'>loading ...</p>}
-        {!loading &&
-          filteredByValue?.map(({ id, name, email, body }) => (
-            <div key={id} className='item'>
-              <p>
-                <span>name: </span>
-                {name}
-              </p>
-              <p>
-                <span>email: </span>
-                {email}
-              </p>
-              <p>
-                <span>text: </span>
-                {body}
-              </p>
-            </div>
-          ))}
+        {!loading && filteredComments?.map((comment) => <Comment key={comment.id} {...comment} />)}
       </div>
     </div>
   );
